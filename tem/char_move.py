@@ -3,10 +3,11 @@ import game_world
 open_canvas()
 
 bb = []
-
+import stage01
+stage1 = None
 class Background:
     def __init__(self):
-        self.image = load_image('futsal_court.png')
+        self.image = load_image('image\\futsal_court.png')
         self.cw = get_canvas_width()
         self.ch = get_canvas_height()
         self.width = self.image.w
@@ -27,7 +28,7 @@ class Char:
     def __init__(self):
         self.x = 90
         self.y = 90    #처음 캐릭터 위치 설정
-        self.image = load_image("char_s.png")
+        self.image = load_image("image\\char_s.png")
         self.xb= 0
         self.yb = 0
         self.frame = 0      #첫번째 사진의 인덱스를 초기화
@@ -54,12 +55,12 @@ class Char:
     def move_y(self,_y):
         self.y += _y
     def coll(self,box):
-        if box.x   >= self.x + 60 and box.y  >= self.y + 60 : return
+        if box.x   >= self.x + 60 and box.y  >= self.y + 60 : return        #사분면
         if box.x  >= self.x  + 60 and box.y <= self.y - 60  : return
         if box.x <= self.x - 60 and box.y >= self.y + 60 : return
         if box.x <= self.x - 60 and box.y <= self.y - 60 : return
 
-        if box.y == self.y and self.x + 60 < box.x : return
+        if box.y == self.y and self.x + 60 < box.x : return             #2칸이상떨어져있는
         if box.y == self.y and self.x - 60 > box.x: return
         if box.x == self.x and self.y + 60 < box.y: return
         if box.x == self.x and self.y - 60 > box.y: return
@@ -98,63 +99,21 @@ class Char:
 
 class BackG:
     def __init__(self):
-        self.image = load_image('back2.png')
-        print(self.image)
+        self.image = load_image('image\\white.png')
         #self.frame = 0
-        self.bgm = load_music('back.mp3')
+        self.bgm = load_music('image\\back.mp3')
         self.bgm.set_volume(30)
         self.bgm.repeat_play()
 
     def draw(self):
         self.image.draw(400,300)
 
-class Box:
-    def __init__(self,_x,_y):
-        self.image = load_image('test2.png')
-        print(self.image)
-        self.x = _x
-        self.y = _y
-
-    def draw(self):
-        #for i in range(10):
-            #self.image.draw(self.x +(60*i),self.y)
-        self.image.draw(self.x ,self.y)
-    def update(self):
-        self.x += 10
-        self.y += 10
-
-
-    def get_bb(self):
-        return self.x - 60, self.y - 60, self.x+60, self.y + 60
-
-class BB:
-    def __init__(self):
-        self.x = 0
-        self.y = 0
-
-    def enter(self):
-        global bb
-        for i in range(13):
-            for j in range(10):
-                if edit[i][j] == 1:
-                    tempBox = Box(30 + (i * 60), 30 + (j * 60))
-
-                    bb.append(tempBox)
-    def draw(self):
-        global bb
-        for i in bb:
-            i.draw()
-    def update(self):
-        for i in bb:
-            i.update()
-
-
 
 
 
 class Logo:
     def __init__(self):
-        self.image = load_image('logo.png')
+        self.image = load_image('image\\logo.png')
         #print(self.image)
         self.frame = 0
         self.timer = 20
@@ -172,7 +131,7 @@ class Logo:
 
 class Goal:
     def __init__(self):
-        self.image = load_image('goal.png')
+        self.image = load_image('image\\goal.png')
         print(self.image)
         self.frame = 0
     def draw(self):
@@ -188,7 +147,7 @@ goal = Goal()
 # boxs2 = [Box(40 +(i*60),40) for i in range(13)]
 # box3 = Box(460,460)
 # box4 = [Box(40,40+(i*60)) for i in range(13)]
-BB = BB()
+
 logo = Logo()
 
 #Edit = [[1],[2],[3],[4],[5],[6],[7],[8],[],[]]
@@ -212,91 +171,78 @@ edit =  [[ 1,1,1,1,1,1,1,1,1,1],        #!
 # for i in range(10):
 #     for j in range(10):
 #         box.draw(edit[i],[j])
-
-
-def handle_events():
-    global running
-
-    events = get_events()
-    for event in events:
-        if event.type == SDL_QUIT:
-            running = False
-            close_canvas()
-        elif event.type == SDL_KEYDOWN:
-            char.move = True
-            if event.key == SDLK_RIGHT:
-                if char.right == False: return
-                char.xb = 60
-                char.yb = 0
-            elif event.key == SDLK_LEFT:
-                if char.left == False: return
-                char.xb = -60
-                char.yb = 0
-            elif event.key == SDLK_UP:
-                if char.up == False: return
-                char.yb = 60
-                char.xb = 0
-            elif event.key == SDLK_DOWN:
-                if char.down == False: return
-                char.yb =-60
-                char.xb = 0
+import player
+playerchar = None
 
 running = True
 
 
+current_time = get_time()
+def update():
+    global current_time,stage1
 
 
-def initenter():
+    game_world.frame_time = get_time() - current_time
 
-
-
-
-    BB.enter()
-
-
-
+    current_time += game_world.frame_time
 
 
 
-#------------------------------<<<<< GAME_LOOF >>>>>---------------------------------
+def main():
+    global current_time
+    current_time = get_time()
+    playerchar = player.Player()
+    stage01.stage1.enter()
+    while running:
 
-initenter()
-while running:
+        clear_canvas()
+        playerchar.update()
+        stage01.stage1.update()
+        playerchar.draw()
+        stage01.stage1.draw()
+        update()
+        playerchar.handle_events()
+        update_canvas()
 
-    clear_canvas()
-    #handle_events()
-    char.reset()
-    # for i in range(13):
-    #     #boxs1[i].draw()
+        continue
+        #handle_events()
+        char.reset()
+        # for i in range(13):
+        #     #boxs1[i].draw()
 
 
-    #box3.draw()
-    back.draw()
-    BB.draw()
-    #char.update()
-    #logo.update()
-    char.draw()
-    #logo.draw()
-    goal.draw()
-    goal.update()
-    BB.update()
-    #for i in boxs1:
-        #char.coll(i)
+        #box3.draw()
+        back.draw()
+        BB.draw()
+        #char.update()
+        #logo.update()
+        char.draw()
+        #logo.draw()
+        goal.draw()
+        goal.update()
+        BB.update()
+        #for i in boxs1:
+            #char.coll(i)
 
-    # bb = []
-    #
-    # for i in range(13):
-    #     for j in range(10):
-    #         if edit[i][j] == 1:
-    #             tempBox = Box(30+(i*60),30+(j*60))
-    #             bb.append(tempBox)
-    # for k in bb:
-    #     char.coll(k)
+        # bb = []
+        #
+        # for i in range(13):
+        #     for j in range(10):
+        #         if edit[i][j] == 1:
+        #             tempBox = Box(30+(i*60),30+(j*60))
+        #             bb.append(tempBox)
+        # for k in bb:
+        #     char.coll(k)
 
-    # for i in bb:
-    #     i.draw()
+        # for i in bb:
+        #     i.draw()
 
-    handle_events()
-    update_canvas()
+        handle_events()
+        update_canvas()
 
-    delay(0.15)
+if __name__ == '__main__':
+    main()
+
+def move_update(obj):
+    pass
+
