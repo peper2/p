@@ -2,6 +2,7 @@ from pico2d import *
 import game_world
 open_canvas()
 
+bb = []
 
 class Background:
     def __init__(self):
@@ -40,10 +41,10 @@ class Char:
     def update(self,box):
         self.frame = (self.frame + 1) % 4 #사진이 3장이므로 3으로 나눔
 
-        self.y += self.yb
-        self.x += self.xb
-        self.yb = 0
-        self.xb = 0
+        # self.y += self.yb
+        # self.x += self.xb
+        # self.yb = 0
+        # self.xb = 0
 
     def pos(self):
         return self.x - self.bg.x, self.y - self.bg.y
@@ -118,14 +119,43 @@ class Box:
         #for i in range(10):
             #self.image.draw(self.x +(60*i),self.y)
         self.image.draw(self.x ,self.y)
+    def update(self):
+        self.x += 10
+        self.y += 10
+
 
     def get_bb(self):
         return self.x - 60, self.y - 60, self.x+60, self.y + 60
 
+class BB:
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+
+    def enter(self):
+        global bb
+        for i in range(13):
+            for j in range(10):
+                if edit[i][j] == 1:
+                    tempBox = Box(30 + (i * 60), 30 + (j * 60))
+
+                    bb.append(tempBox)
+    def draw(self):
+        global bb
+        for i in bb:
+            i.draw()
+    def update(self):
+        for i in bb:
+            i.update()
+
+
+
+
+
 class Logo:
     def __init__(self):
         self.image = load_image('logo.png')
-        print(self.image)
+        #print(self.image)
         self.frame = 0
         self.timer = 20
         self.onoff = True
@@ -158,7 +188,7 @@ goal = Goal()
 # boxs2 = [Box(40 +(i*60),40) for i in range(13)]
 # box3 = Box(460,460)
 # box4 = [Box(40,40+(i*60)) for i in range(13)]
-
+BB = BB()
 logo = Logo()
 
 #Edit = [[1],[2],[3],[4],[5],[6],[7],[8],[],[]]
@@ -213,6 +243,24 @@ def handle_events():
 
 running = True
 
+
+
+
+def initenter():
+
+
+
+
+    BB.enter()
+
+
+
+
+
+
+#------------------------------<<<<< GAME_LOOF >>>>>---------------------------------
+
+initenter()
 while running:
 
     clear_canvas()
@@ -224,27 +272,29 @@ while running:
 
     #box3.draw()
     back.draw()
-    char.update()
+    BB.draw()
+    #char.update()
     #logo.update()
     char.draw()
     #logo.draw()
     goal.draw()
     goal.update()
+    BB.update()
     #for i in boxs1:
         #char.coll(i)
 
-    bb = []
+    # bb = []
+    #
+    # for i in range(13):
+    #     for j in range(10):
+    #         if edit[i][j] == 1:
+    #             tempBox = Box(30+(i*60),30+(j*60))
+    #             bb.append(tempBox)
+    # for k in bb:
+    #     char.coll(k)
 
-    for i in range(13):
-        for j in range(10):
-            if edit[i][j] == 1:
-                tempBox = Box(30+(i*60),30+(j*60))
-                bb.append(tempBox)
-    for k in bb:
-        char.coll(k)
-
-    for i in bb:
-        i.draw()
+    # for i in bb:
+    #     i.draw()
 
     handle_events()
     update_canvas()
