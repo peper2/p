@@ -28,7 +28,7 @@ class Stage01:
 
     def update(self):
         for i in self.box_house:
-            pass
+            i.update()
 
     def get_box_group(self):
         for o in self.box_house:
