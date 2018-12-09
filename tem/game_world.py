@@ -1,10 +1,12 @@
+from pico2d import *
+
 objects = [[],[],[]]
 layer_bg = 0
 layer_player = 1
 layer_obstacle = 2
 
 PIXEL_PER_METER = (10.0/ 0.3)
-GRASS_SPEED = 40.0
+GRASS_SPEED = 400.0
 GRASS_SPEED_MPM = (GRASS_SPEED * 1000.0 / 60.0)
 GRASS_SPEED_MPS = (GRASS_SPEED_MPM / 60.0)
 GRASS_SPEED_PPS = (GRASS_SPEED_MPS * PIXEL_PER_METER)
@@ -40,6 +42,7 @@ def draw():
 	for o in all_objects():
 		o.draw()
 
-
-
-
+background = load_image("image\\back2.png")
+def blank_draw():
+    global background
+    background.draw(400,300)
