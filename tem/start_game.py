@@ -1,7 +1,7 @@
 from pico2d import *
-open_canvas(800,600)
-import char_move
-char_move.main()
+open_canvas()
+import mygame
+mygame.main()
 close_canvas()
 
 
