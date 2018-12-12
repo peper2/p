@@ -4,6 +4,8 @@ import game_world
 import stage01
 import mygame
 import effect
+
+fail_image = load_image("image\\fail_pop.png")
 class Player:
     def __init__(self):
         self.images  = [load_image("image\\char_s2.png"),load_image("image\\char_s3.png"),load_image("image\\ball.png")]
@@ -21,7 +23,8 @@ class Player:
         self.effect = effect.Effect()
         self.gokey = False
         self.imagess = [load_image("image\\runing2.png"), load_image("image\\runing3.png")]
-
+    def enter(self,_stage):
+        self.stage = _stage
     def draw(self):
         if self.moving== False:
             #self.images[0].clip_draw(int(self.frame) * 60, 0, 60, 60, self.x, self.y)  # 연속된 모션 사진을 출력하기 위한 커팅작업
@@ -37,21 +40,44 @@ class Player:
             self.effect.draw()
 
     def update(self):
-        self.frame = (self.frame + 4 * game_world.ACTION_PER_TIME * game_world.frame_time ) % 4
+        if stage01.stage1.delay_stage == False:
+            self.frame = (self.frame + 4 * game_world.ACTION_PER_TIME * game_world.frame_time ) % 4
         if self.moving :
-            for i in stage01.stage1.box_house:
+            for i in self.stage.box_house:
                 if i.left == False and i.right == False and i.up == False and i.down == False:
                     self.effect.start = False
 
-                    for i in stage01.stage1.box_house:
+                    for i in self.stage.box_house:
                         if self.x - 60 == i.x and self.y == i.y:
                             self.close_dir[0] = True
+                            if i.trap_dir == 0 and self.go_dir == 0 and i.color == 3:
+                                self.death()
+                            if i.trap_dir == 6 or i.trap_dir == 7 and self.go_dir == 0 :
+                                self.death()
                             break
-                    for i in stage01.stage1.box_house:
+                    for i in self.stage.box_house:
                         if self.x  == i.x and self.y + 60 == i.y:
                             self.close_dir[1] = True
+                            if i.trap_dir == 2 and self.go_dir == 2 and i.color == 3:
+                                self.death()
+                            if i.trap_dir == 7 or i.trap_dir==8 and self.go_dir == 2:
+                                self.death()
                             break
+                    for i in self.stage.box_house:
+                        if self.x + 60 == i.x and self.y == i.y:
+                            if i.trap_dir == 1 and self.go_dir == 1 and i.color == 3:
+                                self.death()
+                            if i.trap_dir == 8 or i.trap_dir == 9 and self.go_dir == 1:
+                                self.death()
 
+                            break
+                    for i in self.stage.box_house:
+                        if self.x  == i.x and self.y-60 == i.y:
+                            if i.trap_dir == 3 and self.go_dir == 3 and i.color == 3:
+                                self.death()
+                            if i.trap_dir == 6 or i.trap_dir == 9 and self.go_dir == 3:
+                                self.death()
+                            break
 
                     if self.go_dir == 0:        #왼쪽
                         if self.close_dir[1] == True:
@@ -87,7 +113,9 @@ class Player:
         self.effect.update(self)
     def exit(self):
         pass
-
+    def death(self):
+        global fail_image
+        stage01.stage1.fail = True
     def move_dir(self,_dir):
         self.move_update_motion()
            # self.x -= self.velocity * game_world.frame_time
@@ -102,6 +130,7 @@ class Player:
                 close_canvas()
             elif event.type == SDL_KEYDOWN:
                 if self.moving: return
+                if stage01.stage1.delay_stage: return
                 if event.key == SDLK_LEFT or event.key == SDLK_RIGHT or event.key == SDLK_UP or event.key == SDLK_DOWN:
                     self.gokey = True
                     mygame.key_pree_time = get_time()
@@ -134,7 +163,7 @@ class Player:
     def move_update_motion(self,_dir):
         self.moving = True
         if _dir == 0:
-            for i in stage01.stage1.box_house:
+            for i in self.stage.box_house:
                 if self.y == i.y:
                     if self.x > i.x:
                         if self.min < i.x:
@@ -144,7 +173,7 @@ class Player:
             print(self.count)
            # self.x = self.min + 60
         elif _dir == 1:
-            for i in stage01.stage1.box_house:
+            for i in self.stage.box_house:
                 if self.y == i.y:
                     if self.x < i.x:
                         if self.min > i.x:
@@ -154,7 +183,7 @@ class Player:
             print(self.count)
             #self.x = self.min -60
         elif _dir == 2:
-            for i in stage01.stage1.box_house:
+            for i in self.stage.box_house:
                 if self.x == i.x:
                     if self.y < i.y:
                         if self.min > i.y:
@@ -164,7 +193,7 @@ class Player:
             self.count -= 1
             print(self.count)
         elif _dir == 3:
-            for i in stage01.stage1.box_house:
+            for i in self.stage.box_house:
                 if self.x == i.x:
                     if self.y > i.y:
                         if self.min < i.y:
@@ -177,31 +206,31 @@ class Player:
     def move_update_box(self,_dir):
 
         if _dir == 0:
-            for i in stage01.stage1.box_house:
+            for i in self.stage.box_house:
                 tempX = i.x + ( 60 * self.count)
                 i.move_dir(0,tempX)
-            for i in stage01.stage1.unbox_house:
+            for i in self.stage.unbox_house:
                 tempX = i.x + (60 * self.count)
                 i.move_dir(0, tempX)
         if _dir == 1:
-            for i in stage01.stage1.box_house:
+            for i in self.stage.box_house:
                 tempX = i.x - (60 * self.count)
                 i.move_dir(1, tempX)
-            for i in stage01.stage1.unbox_house:
+            for i in self.stage.unbox_house:
                 tempX = i.x - (60 * self.count)
                 i.move_dir(1, tempX)
         if _dir == 2:
-            for i in stage01.stage1.box_house:
+            for i in self.stage.box_house:
                 tempY = i.y - (60 * self.count)
                 i.move_dir(2, tempY)
-            for i in stage01.stage1.unbox_house:
+            for i in self.stage.unbox_house:
                 tempY = i.y - (60 * self.count)
                 i.move_dir(2, tempY)
         if _dir == 3:
-            for i in stage01.stage1.box_house:
+            for i in self.stage.box_house:
                 tempY = i.y + (60 * self.count)
                 i.move_dir(3, tempY)
-            for i in stage01.stage1.unbox_house:
+            for i in self.stage.unbox_house:
                 tempY = i.y + (60 * self.count)
                 i.move_dir(3, tempY)
         self.count = 0
