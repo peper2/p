@@ -134,6 +134,9 @@ class Player:
                 if event.key == SDLK_LEFT or event.key == SDLK_RIGHT or event.key == SDLK_UP or event.key == SDLK_DOWN:
                     self.gokey = True
                     mygame.key_pree_time = get_time()
+                    self.sound = load_wav('image\\moving.wav')
+                    self.sound.set_volume(100)
+                    self.sound.play(1)
                 if event.key == SDLK_LEFT:
                     self.min = -50000
 

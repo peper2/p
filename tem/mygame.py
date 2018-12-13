@@ -1,5 +1,6 @@
 from pico2d import *
 import game_world
+import player
 
 bb = []
 import stage01
@@ -33,10 +34,13 @@ class Menu():
 
         self.option_setting = load_image("image\\op_pop.png")
         self.option_sound_on = load_image("image\\s_on.png")
+        self.option_bgm_on = load_image("image\\s_on.png")
         self.option_sound_off = load_image("image\\s_off.png")
+        self.option_bgm_off = load_image("image\\s_off.png")
         self.option_setting_state = False
         self.option_sound = True
     def draw(self):
+        #self.background_image.draw(int(self.frame) * 800, 0, 800, 600, 400, 300)
         self.background_image.draw(400,300)
         if self.option_setting_state == False:
             if self.start_down_state == False:
@@ -51,12 +55,16 @@ class Menu():
         else :
             self.option_setting.draw(400,300)
             if self.option_sound:
-                self.option_sound_on.draw(500,300)
-            else : self.option_sound_off.draw(500,300)
+                self.option_sound_on.draw(500,270)
+                self.option_bgm_on.draw(500,370)
+            else :
+                self.option_sound_off.draw(500,270)
+                self.option_bgm_off.draw(500,370)
             if self.exit_down_state == False:
                 self.exit.draw(400, 75)
             else : self.exit_down.draw(400,75)
-
+    # def update(self):
+    #     self.frame = (self.frame + 1 * game_world.ACTION_PER_TIME * game_world.frame_time *2) % 2
 
 
 logo = Logo()
@@ -102,10 +110,10 @@ def handle_events():
         elif event.type == SDL_MOUSEBUTTONDOWN and event.button == SDL_BUTTON_LEFT and menu.option_setting_state:
             if event.x >=305 and event.x <= 495 and event.y >= 475 and event.y <= 575:
                 menu.exit_down_state = True
-            elif event.x >=500 and event.x <= 590 and event.y >= 260 and event.y <= 335:
+            elif event.x >=500 and event.x <= 590 and event.y >= 190 and event.y <= 265:
                 menu.option_sound = False
                 bgm.pause()
-            elif event.x >=410 and event.x <= 500 and event.y >= 260 and event.y <= 335:
+            elif event.x >=410 and event.x <= 500 and event.y >= 190 and event.y <= 265:
                 menu.option_sound = True
                 bgm.resume()
         elif event.type == SDL_MOUSEBUTTONUP and menu.option_setting_state and menu.exit_down_state :
@@ -121,7 +129,7 @@ def update():
 def main_logo():
     global logo,bgm
     bgm = load_music('image\\back.mp3')
-    bgm.set_volume(30)
+    bgm.set_volume(20)
     bgm.repeat_play()
     while True:
         clear_canvas()
@@ -129,7 +137,7 @@ def main_logo():
         logo.update()
         update()
         update_canvas()
-        if get_time() > 2:
+        if get_time() > 3:
             del(logo)
             return
 menu_loop = True

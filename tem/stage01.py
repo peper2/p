@@ -81,6 +81,7 @@ class Stage:
                         continue
                     self.unbox_house.append(box.Box(self.stage_default_x + (j * 60), self.stage_default_y + (self.reverseY * 60), 0))  # 흰색
     def next_stage(self):
+
         if self.now_stage == 1:
             self.stage_default_x = -140
             self.stage_default_y = 240
@@ -106,6 +107,28 @@ class Stage:
             self.now_stage = 5
             self.reverseY = 45
             self.enter(stage05_design)
+        elif self.now_stage == 5:
+            self.stage_default_x = 40
+            self.stage_default_y = 1740
+            self.now_stage = 6
+            self.reverseY = 22
+            mygame.playerchar.dir = 3.141592 * 2
+            self.enter(stage06_design)
+        elif self.now_stage == 6:
+            self.stage_default_x = 40
+            self.stage_default_y = 1740
+            self.now_stage = 7
+            self.reverseY = 22
+            mygame.playerchar.dir = 3.141592 * 2
+            self.enter(stage06_design)
+        elif self.now_stage == 7:
+            self.stage_default_x = 40
+            self.stage_default_y = 1740
+            self.now_stage = 8
+            self.reverseY = 22
+            mygame.playerchar.dir = 3.141592 * 2
+            self.enter(stage06_design)
+
     def draw(self):
         for i in self.box_house:
             i.draw()
