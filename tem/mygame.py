@@ -69,8 +69,20 @@ class Menu():
 class Pop():
     def __init__(self):
         self.pop_image= load_image("image\\retry.png")
+        # self.pop_yes_up = load_image("image\\yes_on.png")
+        # self.pop_yes_down = load_image("image\\yes_off.png")
+        # self.pop_no_up = load_image("image\\no_on.png")
+        # self.pop_no_down = load_image("image\\no_off.png")
+        self.deltime = get_time()
+
+    def draw(self):
+        if get_time() - self.deltime >2:
+            self.pop_image.draw(400,300)
+            # self.pop_yes_up.draw(400,400)
+            # self.pop_no_up.draw(500,400)
 logo = Logo()
 menu = Menu()
+pop= Pop()
 import player
 playerchar = None
 
@@ -175,6 +187,8 @@ def main():
         stage_number_images[now_stage].draw(650,550)
         if stage01.stage1.delay_stage  and stage01.stage1.fail :
             stage01.stage1.fail_image.draw(400, 300)
+            pop.draw()
+
 
         elif stage01.stage1.delay_stage == True:
             stage01.stage1.clear_image.draw(400, 300)
@@ -183,6 +197,10 @@ def main():
         playerchar.handle_events()
         update_canvas()
 
+def retry():
+    global pop
+    pop.deltime = get_time()
+    print( pop.deltime )
 
 if __name__ == '__main__':
     main()
