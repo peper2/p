@@ -66,7 +66,9 @@ class Menu():
     # def update(self):
     #     self.frame = (self.frame + 1 * game_world.ACTION_PER_TIME * game_world.frame_time *2) % 2
 
-
+class Pop():
+    def __init__(self):
+        self.pop_image= load_image("image\\retry.png")
 logo = Logo()
 menu = Menu()
 import player
@@ -149,8 +151,9 @@ def main_menu():
         handle_events()
         update()
         update_canvas()
+now_stage=0
 def main():
-    global current_time,playerchar
+    global current_time,playerchar,now_stage
 
     main_logo()
     main_menu()
@@ -158,6 +161,7 @@ def main():
     playerchar = player.Player()
     stage01.stage1.enter(stage01.stage01_design)
     playerchar.enter(stage01.stage1)
+
     while running:
 
         clear_canvas()
@@ -168,10 +172,13 @@ def main():
         stage01.stage1.draw()
 
         playerchar.draw()
+        stage_number_images[now_stage].draw(650,550)
         if stage01.stage1.delay_stage  and stage01.stage1.fail :
             stage01.stage1.fail_image.draw(400, 300)
+
         elif stage01.stage1.delay_stage == True:
             stage01.stage1.clear_image.draw(400, 300)
+
         update()
         playerchar.handle_events()
         update_canvas()
@@ -179,3 +186,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+stage_number_images = [load_image("image\\1.png"),load_image("image\\2.png"),load_image("image\\3.png"),load_image("image\\4.png"),load_image("image\\5.png"),load_image("image\\6.png")]

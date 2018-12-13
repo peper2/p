@@ -150,6 +150,7 @@ class Stage:
                 self.unbox_house.clear()
                 self.next_stage()
                 mygame.playerchar.dir = 3.141592 * 2
+                mygame.now_stage +=1
     def fail_message(self):
         if self.fail == True:
             if self.delay_stage == False:
@@ -164,4 +165,3 @@ class Stage:
                 self.fail = False
                 mygame.playerchar.dir = 3.141592 * 2
 stage1 = Stage()
-    #45
