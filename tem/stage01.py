@@ -144,8 +144,8 @@ class Stage:
             if self.delay_stage== False:
                 self.next_stage_start = get_time()
                 self.delay_stage = True
-                mygame.retry()
-            if get_time() - self.next_stage_start > 4:
+                #mygame.retry()
+            if get_time() - self.next_stage_start > 1:
                 self.delay_stage = False
                 self.box_house.clear()
                 self.unbox_house.clear()
@@ -158,8 +158,8 @@ class Stage:
             if self.delay_stage == False:
                 self.next_stage_start = get_time()
                 self.delay_stage = True
-                mygame.retry()
-            if get_time() - self.next_stage_start > 4:
+                #mygame.retry()
+            if get_time() - self.next_stage_start > 1:
                 self.delay_stage = False
                 self.box_house.clear()
                 self.unbox_house.clear()
